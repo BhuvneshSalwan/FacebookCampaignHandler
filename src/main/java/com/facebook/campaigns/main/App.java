@@ -1,13 +1,19 @@
 package com.facebook.campaigns.main;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.facebook.campaigns.common.CampaignCreate;
 import com.google.api.services.bigquery.Bigquery;
 import com.google.api.services.bigquery.model.TableDataList;
 import com.google.api.services.bigquery.model.TableRow;
+import com.google.api.services.bigquery.model.TableDataInsertAllRequest.Rows;
 import com.google.bigquery.main.BQOperations;
 import com.google.bigquery.main.GAuthenticate;
 
 public class App{
+	
+	public static ArrayList<Rows> logChunk = new ArrayList<Rows>();
     
 	public static void main(String[] args)
 	{
@@ -21,12 +27,18 @@ public class App{
 			if(BQOperations.StructureValidate(bigquery, "campaign_create")){
 	    	
 				System.out.println("Response Message : Validated the Structure of Table : adset_update in the Big Query.");
+				//Commented as in Version 1 of the Code.
+				//TableDataList list = BQOperations.GetUpdateRows(bigquery, "campaign_create");
 				
-				TableDataList list = BQOperations.GetUpdateRows(bigquery, "campaign_create");
+				List<TableRow> list = BQOperations.GetUpdateRows(bigquery, "campaign_create");
 				
 				if(null != list){
-				
-					for(TableRow row : list.getRows()){
+					// Commented as in Version 1 of the Code.
+					//for(TableRow row : list.getRows()){
+					
+					for(int arr_i = 0; arr_i < list.size(); arr_i++){
+    					
+						TableRow row = list.get(arr_i);
 						
 						if(CampaignCreate.createCampaign(row)){
 							
@@ -66,6 +78,16 @@ public class App{
 			System.exit(0);
 		
 		}
+		
+		if(logChunk.size() > 0){
+    		
+    		if(BQOperations.insertDataRows(bigquery, logChunk)){
+    			System.out.println("Response Message : Logs Added Successfully.");
+    		}else{
+    			System.out.println("Response Message : Error while saving Logs.");
+    		}
+    		
+    	}
 		 
 	}
 	
