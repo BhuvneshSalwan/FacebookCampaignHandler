@@ -65,6 +65,8 @@ public class CampaignCreate {
 			
 			HashMap<String, Object> logsMap = new HashMap<String, Object>();
 			
+			logsMap.put("hostname", String.valueOf(row.getF().get(8).getV()));
+			logsMap.put("parse_client_id", String.valueOf(row.getF().get(9).getV()));
 			logsMap.put("account_id", String.valueOf(row.getF().get(0).getV()));
 			logsMap.put("operation", "CREATE");
 			logsMap.put("table_name", "CAMPAIGN_CREATE");
